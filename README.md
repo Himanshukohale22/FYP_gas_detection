@@ -1,5 +1,7 @@
 # FYP_gas_detection
 
+sensor and extracted gases[in PPM]
+
 * MQ-2 - smoke
 * MQ-7 - Carbon Monoxide
 * MQ-8 - Hydrogen Gas
