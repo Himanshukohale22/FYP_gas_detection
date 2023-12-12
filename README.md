@@ -12,4 +12,13 @@ Sensor and extracted gases[in PPM]
 * SGP30 - TVOC-0-1000ppm , CO2-eq-0-1000ppm				 
 * BME680 - tempreture and humidity.
 
+## key-components 
+* Microcontroller with good performance and required pins.
+* RTC for real time loggin
+* sensors as above
+* wifi/ble capabilities with esp32 wroom s2
+* OTA capabilities
+* TFT display gui
+
+
 
