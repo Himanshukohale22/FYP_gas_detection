@@ -3,16 +3,14 @@
 Sensor and extracted gases[in PPM]
 
 * MQ-2 - smoke
-* MQ-7 - Carbon Monoxide
 * MQ-8 - Hydrogen Gas
-* MQ135 - CO
+* MQ135 - AQI, co2, toluene, NH4 ,acetone 
 * MQ138 - Formaldehyde gas
 * PM2.5 sensor - partical sensor
-* CCS811 - Air quality eCO2 400 - 8192 ppm/TVOC 0-1187ppb  
-* SGP30 - TVOC-0-1000ppm , CO2-eq-0-1000ppm				 
-* BME680 - tempreture and humidity.
+* DHT11 - Temperature and Humidity 
 
 ## key-components 
+
 * Microcontroller with good performance and required pins.
 * RTC for real time loggin
 * sensors as above
