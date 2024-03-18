@@ -20,5 +20,7 @@ Sensor and extracted gases[in PPM]
 * OTA capabilities
 * TFT display gui
 
+## Output
+![FYP_readings](https://github.com/Himanshukohale22/FYP_GreenSpace/assets/114358863/e31bab9c-cada-4fa6-a2cb-cbe7bb7b88a1)
 
 
