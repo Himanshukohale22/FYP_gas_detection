@@ -1,6 +1,9 @@
-
 /*
- *
+ @author - Himanshu kohale/Binarylinux
+ Gitub   - https://github.com/Himanshukohale22
+ Date - 2024
+
+
  *dht11 - Temperature and Humidity
  *MQ2 - CO/LPG/SMOKE
  *MQ8 - H2
@@ -8,23 +11,36 @@
  *pm 2.5 - Pm2.5 particle
  *MQ135 - AQI 
  
+Display GUI
+ESP32 to Arduino data transfer 
+
+
  */
 
-
-
+/******************************Includes****************************************/
 #include <MQ2.h>
 #include <Wire.h>
 #include <MQUnifiedsensor.h>
 #include "DHT.h"
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+#include <SPI.h>
 
-/***pin declairation****/
+/************pins/variables/functions declairation*****************************/
+
+#define BUZZER 4 // Buzzer for alarm when SMOKE is detected than usually set value (smoke = 100ppm )
 
 #define DHTPIN 3          // DHT11 
 #define DHTTYPE DHT11
 DHT dht(DHTPIN,DHTTYPE);
+float h ;
+float t ;
+float hic ;
+
 
 int measurePin = A4;      // GYP pm2.5 dust sensor 
-int ledPower = 2;      
+int ledPower = 2;         // Digital pin 
 int samplingTime = 280;
 int deltaTime = 40;
 int sleepTime = 9680;
@@ -50,13 +66,28 @@ MQUnifiedsensor MQ135(Board, Voltage_Resolution,  ADC_Bit_Resolution, Pin135, Ty
 int pin = A0;                   // MQ2 sensor for smoke detection 
 int lpg, co, smoke;
 MQ2 mq2(pin);
+float H2;
 
 #define Mq_135pin A3            // MQ135 for less accurate AQI  
 int AQI;
+float CO2;
 
+#define TFT_CS        10        // Display pins
+#define TFT_RST        8 
+#define TFT_DC         9
+
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
+
+
+/****************************main body*****************************************/
 
 void setup() {
    Serial.begin(9600);
+   pinMode(7, OUTPUT);
+
+   digitalWrite(7,HIGH);
+   delay(500);
+   digitalWrite(7,LOW);
 
    Serial.print("Humidity, ");  
    Serial.print("Temperature, "); 
@@ -86,15 +117,22 @@ void setup() {
   MQ135.setRegressionMethod(1);  //_PPM =  a*ratio^b
   MQ135.setR0(9.03);
 
+  // Serial.print(" Starting \n");  // starting Display 
+
+  tft.initR(INITR_BLACKTAB); 
+  starting_display();
+  // delay(10000);
+  // tftPrintTest();
+
 }
 
 void loop() {
   
   delay(2000);
   
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-  float hic = dht.computeHeatIndex(t);
+  h = dht.readHumidity();
+  t = dht.readTemperature();
+  hic = dht.computeHeatIndex(t);
 
   Serial.print(h);
   Serial.print("% |");
@@ -108,6 +146,8 @@ void loop() {
   lpg = mq2.readLPG();
   co = mq2.readCO();
   smoke = mq2.readSmoke();
+
+  // alarmSystem(); /  // function will check if value of smoke is incresed, for fire or not 
 
   MQ8.update();
   MQ135.update();
@@ -150,6 +190,63 @@ float Acetone = MQ135.readSensor();
   AQI = analogRead(A3);   // mq135 
   Serial.print(AQI);
   Serial.print("ppm \n");
+
+
+  tftPrintTest();   // Display
+  alarmSystem();    // Alarm system
+
   delay(1000);
 
 }
+
+/****************************Declaired functions***********************************************/
+
+unsigned long starting_display(){
+  delay(2000);
+  tft.fillScreen(ST77XX_BLACK);
+  tft.setRotation(1);
+  // tft.drawLine(0,20, 500,20 ,ST7735_WHITE);
+  tft.drawRect(10,10,140,105,ST7735_WHITE);
+  tft.setCursor(10, 10);
+  tft.setTextColor(ST77XX_RED);
+  tft.setTextSize(2);
+  tft.setCursor(30, 40);
+  tft.print("Hey hi!!");
+  tft.setCursor(30, 60);
+  tft.print("This is");
+  tft.setCursor(40, 80);
+  tft.print(" VAAYU");  
+}
+
+unsigned long tftPrintTest() {
+  tft.fillScreen(ST77XX_BLACK);
+  tft.setRotation(1);
+  tft.drawRect(5,5,150,122,ST7735_WHITE);
+  tft.setTextColor(ST7735_WHITE);
+  tft.setTextSize(2);
+  tft.setCursor(8, 10);
+  tft.println("Temp :");tft.setCursor(80, 10);tft.print(t);
+  tft.setCursor(8, 30);
+  tft.println("Humi :");tft.setCursor(80, 30);tft.print(h);
+  tft.setCursor(8, 50);
+  tft.println("AQI  :");tft.setCursor(80, 50);tft.print(AQI);
+  tft.setCursor(8, 70);
+  tft.println("pm2.5:");tft.setCursor(80, 70);tft.print(dustDensity);
+  // tft.setCursor(8, 90);
+  // tft.println("H2   :");tft.setCursor(80, 90);tft.print(H2);
+  // tft.setCursor(8, 110);
+  // tft.println("CO2  :");tft.setCursor(60, 110);tft.print(CO2);
+}
+
+// function for buzzer alarm system 
+
+unsigned long alarmSystem(){         
+
+  if (smoke >=100) {
+  digitalWrite(7, HIGH);
+
+}
+
+// function for sending data to ESP web server Via serial 
+
+

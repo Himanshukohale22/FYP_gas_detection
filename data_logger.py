@@ -3,7 +3,7 @@ import serial
 import time
 import csv
 
-SERIAL_PORT = "COM3"  # ardiuno connected with com port 
+SERIAL_PORT = `~dev/ttyACM0` # ardiuno connected with com port 
 BOUD_RATE = 9600      # boud rate same as set in ide
 
 #serial data fetching 
@@ -32,7 +32,7 @@ def on_close(event):
     with open('SensorData.csv','w',newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(['lpg','smoke','co','pm2.5'])
-        for x, s1, s2 in zip(x_vals, sensor_MQ2, sensor_pm2)
+        for x, s1, s2 in zip(x_vals, sensor_MQ2, sensor_pm2):
             writer.writerow([x,s1,s2])
 
 # x = serial.Serial(com, baud, timeout=0.1)
