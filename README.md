@@ -66,6 +66,6 @@ Internal-circuit of VAAYU :-
 Product VAAYU :-
 --
 
-![product](imaage-----------)(images/box-Vaayu.jpeg)
+![product](images/box-Vaayu.jpeg)
 
 
